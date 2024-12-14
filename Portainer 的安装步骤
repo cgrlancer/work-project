@@ -1,0 +1,42 @@
+Portainer 的安装步骤
+安装 Docker：首先确保你的 Linux 系统上已经安装了 Docker。如果还没有安装，请先安装 Docker。
+
+如果没有安装 Docker，可以执行以下命令进行安装：
+
+bash
+Copy code
+# 安装 Docker
+sudo apt-get update
+sudo apt-get install -y docker.io
+启动 Portainer 容器： 你可以直接通过 Docker 启动 Portainer 容器，执行以下命令来运行 Portainer：
+
+bash
+Copy code
+# 创建一个 Docker 数据卷
+docker volume create portainer_data
+
+# 启动 Portainer 容器
+docker run -d -p 9000:9000 --name portainer \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v portainer_data:/data \
+  portainer/portainer-ce
+解释：
+
+-v /var/run/docker.sock:/var/run/docker.sock：这是为了让 Portainer 能够与 Docker 引擎交互，控制和管理 Docker。
+-v portainer_data:/data：持久化 Portainer 的数据，防止容器重启时丢失配置。
+-p 9000:9000：将容器的 9000 端口映射到宿主机的 9000 端口，以便在浏览器中访问 Portainer。
+访问 Portainer： 启动容器后，你可以在浏览器中访问 http://localhost:9000（如果是在本地机器上运行）来进入 Portainer 的管理界面。
+
+你会被要求创建一个管理员账户，用于登录并管理你的 Docker 环境。
+登录后，你可以通过图形化界面查看和管理 Docker 容器、镜像、网络、卷、Docker Compose 项目等。
+Docker Compose 与 Portainer 的关系
+Docker Compose 是一个工具，用于定义和运行多容器 Docker 应用程序，通常是通过 docker-compose.yml 文件来描述多个服务（例如：数据库、Web 服务、缓存等）如何运行和相互连接。
+
+Portainer 是一个 Docker 管理工具，允许你通过图形界面管理 Docker 容器和 Docker Compose 项目。如果你需要使用 Docker Compose（例如：启动多容器应用），Portainer 支持直接在其界面中操作 Docker Compose 配置。
+
+使用 Portainer 管理 Docker Compose
+即使你不需要单独安装 Docker Compose，Portainer 也能帮助你通过图形界面管理 Docker Compose 的服务：
+
+在 Portainer 中，选择 "Stacks"（堆栈）选项，点击 "Add Stack"（添加堆栈）。
+将你的 docker-compose.yml 配置文件内容粘贴到 Portainer 的编辑框中。
+点击 "Deploy the stack"（部署堆栈）来启动相关服务。
