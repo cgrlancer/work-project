@@ -42,6 +42,17 @@ services:
       - /software/project1/www:/usr/share/nginx/html  # 挂载前端静态文件
     networks:
       - my_network
+      
+  # Redis 服务
+  redis:
+    image: redis:latest  # 使用官方 Redis 镜像
+    container_name: redis_oa
+    ports:
+      - "6379:6379"  # 映射 Redis 服务的 6379 端口
+    volumes:
+      - /software/ox/redis_data:/data  # 持久化 Redis 数据
+    networks:
+      - my_network    
 
 networks:
   my_network:
