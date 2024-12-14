@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: xx  # 设置 root 用户的密码
       MYSQL_DATABASE: xx  # 设置数据库名称
       #MYSQL_USER: root                # 设置数据库用户
-      MYSQL_PASSWORD: xx       # 设置数据库用户的密码
+      #MYSQL_PASSWORD: xx       # 设置数据库用户的密码
     ports:
       - "3306:3306"  # 映射端口
     volumes:
@@ -24,6 +24,7 @@ services:
     environment:
       JAVA_HOME: /usr/lib/jvm/java-8-openjdk
     volumes:
+      #- /software/oa/lib:/software/oa/lib  # 映射宿主机的 lib 目录到容器的 /software/oa/lib 目录
       - /software/project1:/app  # 将 /software/project1 目录挂载到容器内的 /app
     networks:
       - my_network
