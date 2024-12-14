@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # MySQL 服务配置
+  mysql:
+    image: mysql:8.0  # 使用官方 MySQL 8.0 镜像
+    container_name: mysql  # 容器的名字
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password  # 设置 root 用户的密码
+      MYSQL_DATABASE: mydb  # 创建一个数据库，名为 mydb
+      MYSQL_USER: user  # 创建一个普通用户
+      MYSQL_PASSWORD: user_password  # 设置普通用户的密码
+    ports:
+      - "3306:3306"  # 映射 MySQL 服务的 3306 端口
+    volumes:
+      - /software/mysql_data:/var/lib/mysql  # 持久化存储数据到宿主机的 /software/mysql_data 文件夹
+    networks:
+      - my_network  # 使用自定义网络
+
+  # Redis 服务配置
+  redis:
+    image: redis:6.2  # 使用官方 Redis 6.2 镜像
+    container_name: redis  # 容器的名字
+    ports:
+      - "6379:6379"  # 映射 Redis 服务的 6379 端口
+    volumes:
+      - /software/redis_data:/data  # 持久化存储 Redis 数据到宿主机的 /software/redis_data 文件夹
+    networks:
+      - my_network  # 使用自定义网络
+
+  # Nginx 服务配置
+  nginx:
+    image: nginx:latest  # 使用官方 Nginx 镜像
+    container_name: nginx  # 容器的名字
+    ports:
+      - "80:80"  # 映射 HTTP 服务的 80 端口
+      - "443:443"  # 映射 HTTPS 服务的 443 端口
+    volumes:
+      - /software/nginx.conf:/etc/nginx/nginx.conf  # 挂载宿主机的 Nginx 配置文件
+      - /software/www:/usr/share/nginx/html  # 挂载宿主机的 web 根目录
+    networks:
+      - my_network  # 使用自定义网络
+
+  # Java 服务配置 (OpenJDK)
+  java:
+    image: openjdk:8u312-jdk  # 使用 OpenJDK 8 镜像
+    container_name: java  # 容器的名字
+    environment:
+      JAVA_HOME: /usr/lib/jvm/java-8-openjdk  # 设置 JAVA_HOME 环境变量
+    volumes:
+      - /software/app:/app  # 挂载宿主机的 /software/app 目录到容器的 /app 目录，用来存放 Java 应用
+    networks:
+      - my_network  # 使用自定义网络
+    command: java -jar /app/your_app.jar  # 执行命令启动 Java 应用
+
+networks:
+  my_network:
+    driver: bridge  # 使用 Docker 的桥接网络模式
+
+volumes:
+  mysql_data:  # MySQL 数据持久化卷
+  redis_data:  # Redis 数据持久化卷
